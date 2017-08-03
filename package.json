@@ -5,11 +5,12 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.15.3",
+    "mysql": "^2.14.1",
     "nodemon": "^1.11.0"
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon app.js"
+    "dev": "./node_modules/.bin/nodemon ./bin/www"
   },
   "repository": {
     "type": "git",
