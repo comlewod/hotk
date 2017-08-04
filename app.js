@@ -1,21 +1,19 @@
+var path = require('path');
 var express = require('express');
 var mysql = require('mysql');
-var db = require('./conf/db');
+var expressLayouts = require('express-ejs-layouts');
+var controller = require('./controller/init');
 var os = require('os');
 
 var app = new express();
 
-//创建连接池，提高性能
-var pool = mysql.createPool(db.mysql);
+app.engine('.html', require('ejs').__express);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+app.use(expressLayouts);
 
-app.get('/', function(req, res){
-	pool.getConnection(function(err, connection){
-		connection.query('SELECT * FROM user', function(err, results, fields){
-			if( err ) throw err;
-			res.json(results);
-		});
-	});
-	//res.send('Hello, Athena');
-});
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(controller);//通过express的router来获取所设置的路由
 
 module.exports = app;

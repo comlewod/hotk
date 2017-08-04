@@ -1,0 +1,23 @@
+<%- contentFor('header') %>
+<div>header</div>
+
+<%- contentFor('body') %>
+<div>body</div>
+<div class="show_user">
+	<div v-for="(value, index) in arr">
+		{{value.name}}
+	</div>
+</div>
+
+<%- contentFor('footer') %>
+<div>footer</div>
+
+<script>
+var arr = JSON.parse('<%- JSON.stringify(result) %>') || [];
+new Vue({
+	el: '.show_user',
+	data: {
+		arr: arr
+	}
+});
+</script>
