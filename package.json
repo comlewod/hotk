@@ -7,12 +7,14 @@
     "ejs": "^2.5.7",
     "express": "^4.15.3",
     "express-ejs-layouts": "^2.3.1",
+    "glob": "^7.1.2",
     "mysql": "^2.14.1",
     "nodemon": "^1.11.0"
   },
   "devDependencies": {},
   "scripts": {
     "dev": "./node_modules/.bin/nodemon ./bin/www",
+    "pack": "node ./pack/index",
     "save_database": "mysqldump -uroot -p hotk > ~/program/document/program/hotk/database/hotk.sql"
   },
   "repository": {
