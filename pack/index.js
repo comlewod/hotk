@@ -14,6 +14,8 @@ config.pages.forEach(filePath => {
 		var file_js = path.join(config.views, info.name, widget, '*.js');
 	});
 
+	packImage(info);
+
 	content += fs.readFileSync(filePath, {encoding: 'utf8'});
 });
 

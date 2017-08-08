@@ -1,3 +1,5 @@
 /npm-debug.log
 /node_modules
 /bin/npm-debug.log
+/public/pages/image
+/public/pages/js
