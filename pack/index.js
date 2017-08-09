@@ -15,7 +15,6 @@ config.pages.forEach(filePath => {
 	});
 
 	packImage(info);
-
 	content += fs.readFileSync(filePath, {encoding: 'utf8'});
 });
 

@@ -14,6 +14,8 @@
 <%- contentFor('footer') %>
 <div>footer</div>
 
+<input class="j-input" type="text" />
+
 <script>
 var arr = JSON.parse('<%- JSON.stringify(result) %>') || [];
 new Vue({
@@ -22,4 +24,15 @@ new Vue({
 		arr: arr
 	}
 });
+
+$('.j-input').on('input', function(){
+	var num = $(this).val();
+	var reg = /\s/g;
+	if( reg.test(num) ){
+		var val = num.replace(reg, '');
+		$(this).val(val);
+	}
+});
+
+
 </script>
