@@ -21,7 +21,7 @@ function packImage(info){
 		fs.removeSync(_path);
 	});
 	
-	//page的图片，可共用到当前页面的其它组件（同名则以组件图片优先）
+	//page的图片，可共用到当前页面的其它组件（图片同名则以组件图片优先）
 	var pageImg = {};
 	info.widgets.forEach(widget => {
 		//按组件来处理组件内的图片，并替换组件内js、css的图片名称
@@ -43,6 +43,7 @@ function packImage(info){
 			var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
 			var nextName = fileRename(imgInfo.dir + imgInfo.base) + fileRename(buffer);
 			var fileName = prevName + nextName + imgInfo.ext;
+
 			fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
 			imgObj[imgInfo.base] = fileName;
 		});

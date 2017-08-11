@@ -27,8 +27,8 @@ function packPage(info, content){
 		fs.writeFileSync(path.join(config.publicPages, 'css', cssName), pageCss, 'utf8');
 
 		var indexContent = fs.readFileSync(info.path, 'utf8');
-		indexContent = indexContent.replace(/page.js/g, jsName);
-		indexContent = indexContent.replace(/page.css/g, cssName);
+		indexContent = indexContent.replace(/page.js/g, '/pages/js/' + jsName);
+		indexContent = indexContent.replace(/page.css/g, '/pages/css/' + cssName);
 		var pageImg = content.pageImg;
 
 
