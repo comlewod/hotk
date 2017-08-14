@@ -9,6 +9,7 @@ var cryptoJs = require('crypto-js');
 
 var config = require('./config');
 var packWidget = require('./packWidget');
+var packPage = require('./packPage');
 
 function packImage(info){
 	//该页面的js和css
@@ -23,47 +24,51 @@ function packImage(info){
 	
 	//page的图片，可共用到当前页面的其它组件（图片同名则以组件图片优先）
 	var pageImg = {};
-	info.widgets.forEach(widget => {
+	info.widgets.forEach((widget, index) => {
 		//按组件来处理组件内的图片，并替换组件内js、css的图片名称
 		var imgObj = {};
 		var widgetPath = path.join(config.pages, info.name, widget);
 		var imgArr = glob.sync(path.join(widgetPath, '*.+(jpeg|jpg|png|gif)'));
 		//获取图片buffer
-		imgArr.forEach(_path => {
+		imgArr.forEach((_path, _index) => {
 			var imgContent = fs.readFileSync(_path);
 			var imgInfo = path.parse(_path);
-			var buffer = imagemin.buffer(imgContent, {
+			imagemin.buffer(imgContent, {
 				plugins: [
 					imageminJpg(),
 					imageminPng({optimizationLevel: 2}),
 					imageminGif()
 				]
+			}).then(buffer => {
+				var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
+				var nextName = fileRename(imgInfo.dir + imgInfo.base) + fileRename(buffer);
+				var fileName = prevName + nextName + imgInfo.ext;
+
+				fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
+				imgObj[imgInfo.base] = fileName;
+
+				if( _index == imgArr.length - 1 ){
+					if( widget == 'page' ){
+						pageImg = JSON.parse(JSON.stringify(imgObj));
+					} else {
+						Object.assign(imgObj, pageImg);
+					}
+					var widgetContent = packWidget(widget, info, imgObj);	
+
+					pageJs += widgetContent.js;
+					pageCss += widgetContent.css;
+				}
+
+				if( index == info.widgets.length - 1 ){
+					packPage(info, {
+						js: pageJs,			//页面的所有组件js
+						css: pageCss,		//页面的所有组件css
+						pageImg: pageImg	//page组件的图片，可共用于其它组件
+					});
+				}
 			});
-
-			var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
-			var nextName = fileRename(imgInfo.dir + imgInfo.base) + fileRename(buffer);
-			var fileName = prevName + nextName + imgInfo.ext;
-
-			fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
-			imgObj[imgInfo.base] = fileName;
 		});
-
-		if( widget == 'page' ){
-			pageImg = JSON.parse(JSON.stringify(imgObj));
-		} else {
-			Object.assign(imgObj, pageImg);
-		}
-
-		var widgetContent = packWidget(widget, info, imgObj);	
-
-		pageJs += widgetContent.js;
-		pageCss += widgetContent.css;
 	});
-	return {
-		js: pageJs,
-		css: pageCss,
-		pageImg: pageImg
-	}
 }
 
 

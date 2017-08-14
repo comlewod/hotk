@@ -15,8 +15,7 @@ config.pagesIndex.forEach(filePath => {
 	fs.access(dirPath, function(err){
 		if( err ) fs.mkdirSync(dirPath, 0777);
 		//得到改页面的所有组件的js和css内容
-		var content = packImage(info);
-		packPage(info, content);
+		packImage(info);
 	});
 });
 
