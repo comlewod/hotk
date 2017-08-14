@@ -10,6 +10,7 @@ var cryptoJs = require('crypto-js');
 var config = require('./config');
 var packWidget = require('./packWidget');
 var packPage = require('./packPage');
+var tools = require('./tools');
 
 function packImage(info){
 	//该页面的js和css
@@ -27,7 +28,7 @@ function packImage(info){
 	info.widgets.forEach((widget, index) => {
 		//按组件来处理组件内的图片，并替换组件内js、css的图片名称
 		var imgObj = {};
-		var widgetPath = path.join(config.pages, info.name, widget);
+		var widgetPath = path.join(config.views, info.name, widget);
 		var imgArr = glob.sync(path.join(widgetPath, '*.+(jpeg|jpg|png|gif)'));
 		//获取图片buffer
 		imgArr.forEach((_path, _index) => {
@@ -41,7 +42,7 @@ function packImage(info){
 				]
 			}).then(buffer => {
 				var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
-				var nextName = fileRename(imgInfo.dir + imgInfo.base) + fileRename(buffer);
+				var nextName = tools.fileRename(imgInfo.dir + imgInfo.base) + tools.fileRename(buffer);
 				var fileName = prevName + nextName + imgInfo.ext;
 
 				fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
@@ -57,24 +58,20 @@ function packImage(info){
 
 					pageJs += widgetContent.js;
 					pageCss += widgetContent.css;
+
+					if( index == info.widgets.length - 1 ){
+						packPage(info, {
+							js: pageJs,			//页面的所有组件js
+							css: pageCss,		//页面的所有组件css
+							pageImg: pageImg	//page组件的图片，可共用于其它组件
+						});
+					}
 				}
 
-				if( index == info.widgets.length - 1 ){
-					packPage(info, {
-						js: pageJs,			//页面的所有组件js
-						css: pageCss,		//页面的所有组件css
-						pageImg: pageImg	//page组件的图片，可共用于其它组件
-					});
-				}
+				
 			});
 		});
 	});
-}
-
-
-function fileRename(str){
-	if( str )
-	return cryptoJs.MD5(str).toString().slice(0, 5);
 }
 
 module.exports = packImage;

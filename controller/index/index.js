@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var ejs = require('ejs');
 
 var adminCrud = require('../../database/crud/admin');
 

@@ -8,7 +8,7 @@ var os = require('os');
 var app = new express();
 
 app.engine('.html', require('ejs').__express);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'html');
 app.use(expressLayouts);
 

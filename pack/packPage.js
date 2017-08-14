@@ -7,14 +7,15 @@ var path = require('path');
 var fs = require('fs-extra');
 
 var config = require('./config');
+var tools = require('./tools');
 
 function packPage(info, content){
 	less.render(content.css).then(obj => {
 		var pageCss = new cleanCss().minify(obj.css).styles;
 		var pageJs = uglifyJs.minify(content.js).code;
 
-		var jsName = info.name + '-' + fileRename(pageJs) + '.js';
-		var cssName = info.name + '-' + fileRename(pageCss) + '.css';
+		var jsName = info.name + '-' + tools.fileRename(pageJs) + '.js';
+		var cssName = info.name + '-' + tools.fileRename(pageCss) + '.css';
 		var oldJs = glob.sync(path.join(config.publicPages, 'js', info.name + '-*.js'));
 		var oldCss = glob.sync(path.join(config.publicPages, 'css', info.name + '-*.css'));
 		oldJs.forEach(_path => {
@@ -36,14 +37,12 @@ function packPage(info, content){
 			let reg = new RegExp(img, 'g');
 			indexContent = indexContent.replace(reg, '/pages/image/' + pageImg[img]);
 		}
-		fs.writeFileSync(path.join(config.views, info.name, info.file), indexContent, 'utf8');
+		
+		indexContent = tools.widgetReg(indexContent);
+		//每个页面的入口index.html
+		fs.writeFileSync(path.join(config.templates, info.name, info.file), indexContent, 'utf8');
 	});
 
 } 
-
-function fileRename(str){
-	if( str )
-	return cryptoJs.MD5(str).toString().slice(0, 5);
-}
 
 module.exports = packPage;
