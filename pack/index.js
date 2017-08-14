@@ -2,6 +2,7 @@ var config = require('./config');
 var packImage = require('./packImage');
 var packLayout = require('./packLayout');
 var packPage = require('./packPage');
+var tools = require('./tools');
 
 var fs = require('fs');
 var path = require('path');
@@ -32,14 +33,17 @@ config.pagesIndex.forEach(filePath => {
 function pageInfo(filePath){
 	var arr = filePath.split('/').reverse();
 	var pagePath = path.join(config.views, arr[1], '*', '*.html');
-	
+
 	var widgets = ['page'];//每个页面必须要有个page组件
+	console.log(config.widgets);
+	/*
 	var widgetArr = glob.sync(pagePath);
 	widgetArr.forEach(_path => {
 		var _arr = _path.split('/').reverse();
 		if( widgets.indexOf(_arr[1]) == -1 )
 		widgets.push(_arr[1]);
 	});
+	*/
 
 	return {
 		name: arr[1],		//页面名称

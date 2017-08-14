@@ -31,46 +31,54 @@ function packImage(info){
 		var widgetPath = path.join(config.views, info.name, widget);
 		var imgArr = glob.sync(path.join(widgetPath, '*.+(jpeg|jpg|png|gif)'));
 		//获取图片buffer
-		imgArr.forEach((_path, _index) => {
-			var imgContent = fs.readFileSync(_path);
-			var imgInfo = path.parse(_path);
-			imagemin.buffer(imgContent, {
-				plugins: [
-					imageminJpg(),
-					imageminPng({optimizationLevel: 2}),
-					imageminGif()
-				]
-			}).then(buffer => {
-				var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
-				var nextName = tools.fileRename(imgInfo.dir + imgInfo.base) + tools.fileRename(buffer);
-				var fileName = prevName + nextName + imgInfo.ext;
+		if( imgArr.length ){
+			imgArr.forEach((_path, _index) => {
+				var imgContent = fs.readFileSync(_path);
+				var imgInfo = path.parse(_path);
+				imagemin.buffer(imgContent, {
+					plugins: [
+						imageminJpg(),
+						imageminPng({optimizationLevel: 2}),
+						imageminGif()
+					]
+				}).then(buffer => {
+					var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
+					var nextName = tools.fileRename(imgInfo.dir + imgInfo.base) + tools.fileRename(buffer);
+					var fileName = prevName + nextName + imgInfo.ext;
 
-				fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
-				imgObj[imgInfo.base] = fileName;
+					fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
+					imgObj[imgInfo.base] = fileName;
 
-				if( _index == imgArr.length - 1 ){
-					if( widget == 'page' ){
-						pageImg = JSON.parse(JSON.stringify(imgObj));
-					} else {
-						Object.assign(imgObj, pageImg);
+					if( _index == imgArr.length - 1 ){
+						if( widget == 'page' ){
+							pageImg = JSON.parse(JSON.stringify(imgObj));
+						} else {
+							Object.assign(imgObj, pageImg);
+						}
+						var widgetContent = packWidget(widget, info, imgObj);	
+
+						pageJs += widgetContent.js;
+						pageCss += widgetContent.css;
+
+						if( index == info.widgets.length - 1 ){
+							packPage(info, {
+								js: pageJs,			//页面的所有组件js
+								css: pageCss,		//页面的所有组件css
+								pageImg: pageImg	//page组件的图片，可共用于其它组件
+							});
+						}
 					}
-					var widgetContent = packWidget(widget, info, imgObj);	
-
-					pageJs += widgetContent.js;
-					pageCss += widgetContent.css;
-
-					if( index == info.widgets.length - 1 ){
-						packPage(info, {
-							js: pageJs,			//页面的所有组件js
-							css: pageCss,		//页面的所有组件css
-							pageImg: pageImg	//page组件的图片，可共用于其它组件
-						});
-					}
-				}
-
-				
+				});
 			});
-		});
+		} else {
+			if( index == info.widgets.length - 1 ){
+				packPage(info, {
+					js: pageJs,			//页面的所有组件js
+					css: pageCss,		//页面的所有组件css
+					pageImg: pageImg	//page组件的图片，可共用于其它组件
+				});
+			}
+		}
 	});
 }
 
