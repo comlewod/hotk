@@ -59,7 +59,6 @@ function packImage(info){
 						var widgetContent = packWidget(widget, info, imgObj);	
 						pageJs += widgetContent.js;
 						pageCss += widgetContent.css;
-						console.log(pageJs);
 
 						if( index == info.widgets.length - 1 ){
 							packPage(info, {
@@ -75,7 +74,6 @@ function packImage(info){
 			var widgetContent = packWidget(widget, info, imgObj);	
 			pageJs += widgetContent.js;
 			pageCss += widgetContent.css;
-			console.log(pageJs);
 
 			if( index == info.widgets.length - 1 ){
 				packPage(info, {

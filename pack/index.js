@@ -17,6 +17,8 @@ var glob = require('glob');
  *	5、替换页面index.html的js、css文件名称引用，打包index.html模板
  */
 
+
+
 packLayout();
 config.pagesIndex.forEach(filePath => {
 	var info = pageInfo(filePath);
