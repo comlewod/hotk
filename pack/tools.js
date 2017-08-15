@@ -9,7 +9,7 @@ var tools = {
 	},
 	//模板中组件引用替换 ex: <{ widget(page) }>改成<% include page.html %>
 	widgetReg: function(content){
-		var reg = /\<%\s*widget\((\w*)\)\s*%\>/g; 
+		var reg = /\<@\s*widget\((\w*)\)\s*@\>/g; 
 		content = content.replace(reg, function($0, $1){
 			return '<% include ' + $1 + '.html %>';
 		});

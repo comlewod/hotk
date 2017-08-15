@@ -34,22 +34,43 @@ function pageInfo(filePath){
 	var arr = filePath.split('/').reverse();
 	var pagePath = path.join(config.views, arr[1], '*', '*.html');
 
-	var widgets = ['page'];//每个页面必须要有个page组件
-	console.log(config.widgets);
-	/*
-	var widgetArr = glob.sync(pagePath);
-	widgetArr.forEach(_path => {
-		var _arr = _path.split('/').reverse();
-		if( widgets.indexOf(_arr[1]) == -1 )
-		widgets.push(_arr[1]);
-	});
-	*/
+	//var widgets = ['page'];//每个页面必须要有个page组件
+	var info = path.parse(filePath);
 
+	var reg = tools.reg.widget;
+	var content = fs.readFileSync(filePath, 'utf8');
+	var widgets = [];
+	content.replace(reg, function($0, $1){
+		if( widgets.indexOf($1) == -1 ){
+			widgets.push($1);
+		}
+	});
+	getWidget(info, widgets, widgets);
+	
 	return {
 		name: arr[1],		//页面名称
 		file: arr[0],		//页面入口文件
 		path: filePath,		//页面入口路径
 		widgets: widgets	//页面所含有的组件名称
 	};
+}
+
+//递归获取页面的所有组件依赖
+function getWidget(info, n_widgets, widgets){
+	var reg = tools.reg.widget;
+	var new_widgets = [];	
+	n_widgets.forEach(widget => {
+		var _path = path.join(info.dir, widget, widget + '.html');
+		var content = fs.readFileSync(_path, 'utf8');
+		content.replace(reg, function($0, $1){
+			if( widgets.indexOf($1) == -1 ){
+				new_widgets.push($1);
+				widgets.push($1);
+			}
+		});
+	});
+	if( new_widgets.length ){
+		getWidget(info, new_widgets, widgets);
+	}
 }
 

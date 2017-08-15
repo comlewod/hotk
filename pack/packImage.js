@@ -55,10 +55,11 @@ function packImage(info){
 						} else {
 							Object.assign(imgObj, pageImg);
 						}
-						var widgetContent = packWidget(widget, info, imgObj);	
 
+						var widgetContent = packWidget(widget, info, imgObj);	
 						pageJs += widgetContent.js;
 						pageCss += widgetContent.css;
+						console.log(pageJs);
 
 						if( index == info.widgets.length - 1 ){
 							packPage(info, {
@@ -71,6 +72,11 @@ function packImage(info){
 				});
 			});
 		} else {
+			var widgetContent = packWidget(widget, info, imgObj);	
+			pageJs += widgetContent.js;
+			pageCss += widgetContent.css;
+			console.log(pageJs);
+
 			if( index == info.widgets.length - 1 ){
 				packPage(info, {
 					js: pageJs,			//页面的所有组件js
