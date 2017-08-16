@@ -5,12 +5,13 @@ var config = require('./config');
 var tools = require('./tools');
 
 /*
- *	处理组件内的html、css、js图片替换
+ *	处理组件内的html、css、js图片替换并返回js和css
  *	widget：组件名称	info: 页面信息	imgObj：该组件所有图片名称替换对象
  */
 
 function packWidget(widget, info, imgObj){
 	var widgetPath = path.join(config.views, info.name, widget);
+	var dirPath = path.join(config.templates, info.name);
 
 	var widgetHtml = fs.readFileSync(path.join(widgetPath, widget + '.html'), 'utf8');
 	var widgetCss = fs.readFileSync(path.join(widgetPath, widget + '.less'), 'utf8');
@@ -26,11 +27,17 @@ function packWidget(widget, info, imgObj){
 	}
 
 	//将组件的html打包至templates的页面下
-	widgetHtml = tools.widgetReg(widgetHtml);
-	fs.writeFileSync(path.join(config.templates, info.name, widget +'.html'), widgetHtml, 'utf8');
+	widgetHtml = tools.regReplace(widgetHtml);
+
+	//查看templates下是否有页面文件夹
+	fs.access(dirPath, function(err){
+		if( err ) fs.mkdirSync(dirPath, 0777);
+		fs.writeFileSync(path.join(dirPath, widget +'.html'), widgetHtml, 'utf8');
+	});
+
 	return {
 		js: widgetJs,
-		css: widgetCss
+		css: widgetCss,
 	};
 }
 

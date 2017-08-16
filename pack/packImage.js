@@ -1,7 +1,3 @@
-var imagemin = require('imagemin');
-var imageminJpg = require('imagemin-jpegtran');
-var imageminPng = require('imagemin-optipng');
-var imageminGif = require('imagemin-gifsicle');
 var glob = require('glob');
 var path = require('path');
 var fs = require('fs-extra');
@@ -11,8 +7,11 @@ var config = require('./config');
 var packWidget = require('./packWidget');
 var packPage = require('./packPage');
 var tools = require('./tools');
+var minImg = require('./minImg');
 
-function packImage(info){
+var packGlobal = require('./packGlobal');
+
+async function packImage(info){
 	//该页面的js和css
 	var pageJs = '';
 	var pageCss = '';
@@ -25,64 +24,43 @@ function packImage(info){
 	
 	//page的图片，可共用到当前页面的其它组件（图片同名则以组件图片优先）
 	var pageImg = {};
-	info.widgets.forEach((widget, index) => {
-		//按组件来处理组件内的图片，并替换组件内js、css的图片名称
-		var imgObj = {};
+	var globalArr = [];//全局组件
+	for( let widget of info.widgets ){
 		var widgetPath = path.join(config.views, info.name, widget);
-		var imgArr = glob.sync(path.join(widgetPath, '*.+(jpeg|jpg|png|gif)'));
-		//获取图片buffer
-		if( imgArr.length ){
-			imgArr.forEach((_path, _index) => {
-				var imgContent = fs.readFileSync(_path);
-				var imgInfo = path.parse(_path);
-				imagemin.buffer(imgContent, {
-					plugins: [
-						imageminJpg(),
-						imageminPng({optimizationLevel: 2}),
-						imageminGif()
-					]
-				}).then(buffer => {
-					var prevName = info.name + '-' + widget + '-' + imgInfo.name + '-';
-					var nextName = tools.fileRename(imgInfo.dir + imgInfo.base) + tools.fileRename(buffer);
-					var fileName = prevName + nextName + imgInfo.ext;
+		//处理组件内的图片，并替换组件内js、css的图片名称
+		var imgObj = await minImg({
+			name: info.name,
+			widget: widget
+		}, glob.sync(path.join(widgetPath, '*', '*.+(jpeg|jpg|png|gif)')));
 
-					fs.writeFileSync(path.join(config.publicPages, 'image', fileName), buffer);
-					imgObj[imgInfo.base] = fileName;
-
-					if( _index == imgArr.length - 1 ){
-						if( widget == 'page' ){
-							pageImg = JSON.parse(JSON.stringify(imgObj));
-						} else {
-							Object.assign(imgObj, pageImg);
-						}
-
-						var widgetContent = packWidget(widget, info, imgObj);	
-						pageJs += widgetContent.js;
-						pageCss += widgetContent.css;
-
-						if( index == info.widgets.length - 1 ){
-							packPage(info, {
-								js: pageJs,			//页面的所有组件js
-								css: pageCss,		//页面的所有组件css
-								pageImg: pageImg	//page组件的图片，可共用于其它组件
-							});
-						}
-					}
-				});
-			});
+		if( widget == 'page' ){
+			pageImg = JSON.parse(JSON.stringify(imgObj));
 		} else {
-			var widgetContent = packWidget(widget, info, imgObj);	
-			pageJs += widgetContent.js;
-			pageCss += widgetContent.css;
-
-			if( index == info.widgets.length - 1 ){
-				packPage(info, {
-					js: pageJs,			//页面的所有组件js
-					css: pageCss,		//页面的所有组件css
-					pageImg: pageImg	//page组件的图片，可共用于其它组件
-				});
-			}
+			Object.assign(imgObj, pageImg);
 		}
+		var widgetContent = packWidget(widget, info, imgObj);	
+		pageJs += widgetContent.js;
+		pageCss += widgetContent.css;
+
+		var widgetHtml = fs.readFileSync(path.join(widgetPath, widget + '.html'), 'utf8');
+		//是否有引用全局组件
+		widgetHtml.replace(tools.reg.global, function($0, $1){
+			if( globalArr.indexOf($1) == -1 ){
+				globalArr.push($1);
+			}
+		});
+	}
+
+	if( globalArr.length ){
+		var globalObj = await packGlobal(globalArr);
+		pageJs += globalObj.js;
+		pageCss += globalObj.css;
+	}
+
+	packPage(info, {
+		js: pageJs,			//页面的所有组件js
+		css: pageCss,		//页面的所有组件css
+		pageImg: pageImg	//page组件的图片，可共用于其它组件
 	});
 }
 

@@ -26,6 +26,9 @@
     "pack": "./node_modules/.bin/nodemon ./pack/index",
     "save_database": "mysqldump -uroot -p hotk > ~/program/document/program/hotk/database/hotk.sql"
   },
+  "engines": {
+	  "node": "7.7.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/comlewod/hotk.git"

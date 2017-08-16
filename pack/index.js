@@ -17,18 +17,11 @@ var glob = require('glob');
  *	5、替换页面index.html的js、css文件名称引用，打包index.html模板
  */
 
-
-
 packLayout();
 config.pagesIndex.forEach(filePath => {
 	var info = pageInfo(filePath);
-	var dirPath = path.join(config.templates, info.name);
-	//查看templates下是否有页面文件夹
-	fs.access(dirPath, function(err){
-		if( err ) fs.mkdirSync(dirPath, 0777);
-		//得到改页面的所有组件的js和css内容
-		packImage(info);
-	});
+	//得到改页面的所有组件的js和css内容
+	packImage(info);
 });
 
 //获取页面组件等信息
@@ -36,7 +29,6 @@ function pageInfo(filePath){
 	var arr = filePath.split('/').reverse();
 	var pagePath = path.join(config.views, arr[1], '*', '*.html');
 
-	//var widgets = ['page'];//每个页面必须要有个page组件
 	var info = path.parse(filePath);
 
 	var reg = tools.reg.widget;
@@ -47,6 +39,12 @@ function pageInfo(filePath){
 			widgets.push($1);
 		}
 	});
+	var pageIndex = widgets.indexOf('page');
+	if( pageIndex > -1 ){
+		widgets.splice(pageIndex, 1);
+		//把page组件放到最前，优先打包处理
+		widgets.unshift('page');
+	}
 	getWidget(info, widgets, widgets);
 	
 	return {
@@ -60,10 +58,12 @@ function pageInfo(filePath){
 //递归获取页面的所有组件依赖
 function getWidget(info, n_widgets, widgets){
 	var reg = tools.reg.widget;
+	var globalReg = tools.reg.globalWidget;
 	var new_widgets = [];	
 	n_widgets.forEach(widget => {
 		var _path = path.join(info.dir, widget, widget + '.html');
 		var content = fs.readFileSync(_path, 'utf8');
+
 		content.replace(reg, function($0, $1){
 			if( widgets.indexOf($1) == -1 ){
 				new_widgets.push($1);

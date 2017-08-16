@@ -1,0 +1,1 @@
+var url = 'paypal.png';
