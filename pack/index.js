@@ -1,12 +1,15 @@
+'use strict'
+
+var fs = require('fs-extra');
+var path = require('path');
+var glob = require('glob');
+
 var config = require('./config');
 var packImage = require('./packImage');
 var packLayout = require('./packLayout');
 var packPage = require('./packPage');
 var tools = require('./tools');
-
-var fs = require('fs');
-var path = require('path');
-var glob = require('glob');
+var watchFiles = require('./watchFiles');
 
 /*
  *	打包流程：
@@ -17,62 +20,31 @@ var glob = require('glob');
  *	5、替换页面index.html的js、css文件名称引用，打包index.html模板
  */
 
-packLayout();
-config.pagesIndex.forEach(filePath => {
-	var info = pageInfo(filePath);
-	//得到改页面的所有组件的js和css内容
-	packImage(info);
-});
+(async function(){
+	await processLayout();	
 
-//获取页面组件等信息
-function pageInfo(filePath){
-	var arr = filePath.split('/').reverse();
-	var pagePath = path.join(config.views, arr[1], '*', '*.html');
-
-	var info = path.parse(filePath);
-
-	var reg = tools.reg.widget;
-	var content = fs.readFileSync(filePath, 'utf8');
-	var widgets = [];
-	content.replace(reg, function($0, $1){
-		if( widgets.indexOf($1) == -1 ){
-			widgets.push($1);
-		}
-	});
-	var pageIndex = widgets.indexOf('page');
-	if( pageIndex > -1 ){
-		widgets.splice(pageIndex, 1);
-		//把page组件放到最前，优先打包处理
-		widgets.unshift('page');
+	for( let filePath of config.pagesIndex ){
+		let info = tools.pageInfo(filePath);
+		//得到改页面的所有组件的js和css内容
+		await packImage(info);
 	}
-	getWidget(info, widgets, widgets);
-	
-	return {
-		name: arr[1],		//页面名称
-		file: arr[0],		//页面入口文件
-		path: filePath,		//页面入口路径
-		widgets: widgets	//页面所含有的组件名称
-	};
-}
+	watchFiles();
+})();
 
-//递归获取页面的所有组件依赖
-function getWidget(info, n_widgets, widgets){
-	var reg = tools.reg.widget;
-	var globalReg = tools.reg.globalWidget;
-	var new_widgets = [];	
-	n_widgets.forEach(widget => {
-		var _path = path.join(info.dir, widget, widget + '.html');
-		var content = fs.readFileSync(_path, 'utf8');
 
-		content.replace(reg, function($0, $1){
-			if( widgets.indexOf($1) == -1 ){
-				new_widgets.push($1);
-				widgets.push($1);
-			}
-		});
+async function processLayout(){
+	try{
+		fs.accessSync(config.templates);
+	} catch(e) {
+		fs.mkdirSync(config.templates);
+	}
+	var oldLayout = glob.sync(path.join(config.templates, '*.html'));
+	oldLayout.forEach(_path => {
+		fs.removeSync(_path);
 	});
-	if( new_widgets.length ){
-		getWidget(info, new_widgets, widgets);
+	for( let _path of config.layouts ){
+		await packLayout(_path);
 	}
 }
+
 
