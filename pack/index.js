@@ -7,6 +7,7 @@ var glob = require('glob');
 var config = require('./config');
 var packImage = require('./packImage');
 var packLayout = require('./packLayout');
+var packLibs = require('./packLibs');
 var packPage = require('./packPage');
 var tools = require('./tools');
 var watchFiles = require('./watchFiles');
@@ -21,18 +22,20 @@ var watchFiles = require('./watchFiles');
  */
 
 (async function(){
-	await processLayout();	
+	var libs = await packLibs();
+
+	var layoutInfo = await processLayout(libs);	
 
 	for( let filePath of config.pagesIndex ){
 		let info = tools.pageInfo(filePath);
 		//得到改页面的所有组件的js和css内容
 		await packImage(info);
 	}
-	watchFiles();
+	watchFiles(layoutInfo, libs);
 })();
 
 
-async function processLayout(){
+async function processLayout(libs){
 	try{
 		fs.accessSync(config.templates);
 	} catch(e) {
@@ -42,9 +45,12 @@ async function processLayout(){
 	oldLayout.forEach(_path => {
 		fs.removeSync(_path);
 	});
+	var layoutInfo = {};
 	for( let _path of config.layouts ){
-		await packLayout(_path);
+		let info = path.parse(_path);
+		layoutInfo[info.base] = await packLayout(_path, libs);
 	}
+	return layoutInfo;
 }
 
 

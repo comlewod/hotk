@@ -21,7 +21,7 @@ var tools = {
 		});
 		return content;
 	},
-	regLayout: function(content, staticObj){
+	regLayout: function(content, staticObj, libs){
 		content = content.replace(this.reg.global, function($0, $1){
 			return '<% include global/' + $1 + '.html %>';
 		});
@@ -29,8 +29,15 @@ var tools = {
 			return '/pages/js/' + staticObj.js;
 		});
 		content = content.replace(/layout.css/, function(){
-			return '/pages/js/' + staticObj.css;
+			return '/pages/css/' + staticObj.css;
 		});
+		content = content.replace(/libs.js/, function(){
+			return '/output/' + libs.js;
+		});
+		content = content.replace(/libs.css/, function(){
+			return '/output/' + libs.css;
+		});
+
 		return content;
 	},
 

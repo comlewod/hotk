@@ -12,7 +12,7 @@ var minJsCss = require('./minJsCss');
 /*
  *	打包layout文件
  */
-async function packLayout(_path){
+async function packLayout(_path, libs){
 	let content = fs.readFileSync(_path, 'utf8');
 	let info = path.parse(_path);
 	let globalArr = [];//全局组件
@@ -36,9 +36,10 @@ async function packLayout(_path){
 		css: pageCss
 	});
 
-	content = tools.regLayout(content, staticObj);
+	content = tools.regLayout(content, staticObj, libs);
 
 	fs.writeFileSync(path.join(config.templates, info.base), content, 'utf8');
+	return globalArr;
 }
 
 module.exports = packLayout;

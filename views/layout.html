@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="/js/jquery-3.1.1.min.js"></script>
-<script src="/js/vue.min.js"></script>
+<script src="/frames/jquery-3.1.1.min.js"></script>
+<script src="/frames/vue.min.js"></script>
 
+<script src="libs.js"></script>
 <script src="layout.js"></script>
+
+<link rel="stylesheet" type="text/css" href="libs.css" />
 <link rel="stylesheet" type="text/css" href="layout.css" />
 <%- defineContent('static') %>
 </head>
 
 <body>
+<@ GLOBAL utils @>
 <@ GLOBAL header @>
 
 <%- defineContent('body') %>
 
 <@ GLOBAL dialog @>
+
+<%- defineContent('body') %>
+<script>
+</script>
 </body>
 </html>

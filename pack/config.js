@@ -9,6 +9,8 @@ var config = {
 	views: path.join(ROOT, 'views'),
 	templates: path.join(ROOT, 'templates'),
 	publicPages: path.join(ROOT, 'public', 'pages'),
+	libs: path.join(ROOT, 'public', 'libs'),
+	output: path.join(ROOT, 'public', 'output')
 };
 
 config.pagesIndex = glob.sync(path.join(config.views, '*', '*.html'));

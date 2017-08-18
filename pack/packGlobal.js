@@ -11,6 +11,10 @@ var packWidget = require('./packWidget');
  *	打包global下的组件
  */
 async function packGlobal(globalArr){
+	var widgetContent = {
+		js: '',
+		css: ''
+	};
 	for( let widget of globalArr ){
 		var _path = path.join(config.globalWidget, widget);
 
@@ -22,7 +26,9 @@ async function packGlobal(globalArr){
 			widget: widget
 		}, imgArr);
 
-		var widgetContent = packWidget(widget, {name: 'global'}, imgObj);	
+		var newContent = packWidget(widget, {name: 'global'}, imgObj);	
+		widgetContent.js += newContent.js;
+		widgetContent.css += newContent.css;
 	}
 	return widgetContent;
 }
