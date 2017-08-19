@@ -30,10 +30,19 @@ function packWidget(widget, info, imgObj){
 	widgetHtml = tools.regReplace(widgetHtml);
 
 	//查看templates下是否有页面文件夹
+	try{
+		fs.accessSync(dirPath);
+	} catch(e){
+		//fs.mkdirSync(dirPath, 0777);
+		fs.mkdirSync(dirPath);
+	}
+	fs.writeFileSync(path.join(dirPath, widget +'.html'), widgetHtml, 'utf8');
+	/*
 	fs.access(dirPath, function(err){
 		if( err ) fs.mkdirSync(dirPath, 0777);
 		fs.writeFileSync(path.join(dirPath, widget +'.html'), widgetHtml, 'utf8');
 	});
+	*/
 
 	return {
 		js: widgetJs,

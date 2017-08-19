@@ -6,6 +6,11 @@ var config = require('./config');
 var minJsCss = require('./minJsCss');
 
 async function packLibs(){
+	try{
+		fs.accessSync(config.output);
+	} catch(e){
+		fs.mkdirSync(config.output);
+	}
 	var content = {
 		js: '',
 		css: ''
