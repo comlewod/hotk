@@ -2,6 +2,10 @@
 var app = require('../app');
 var http = require('http');
 
+var port = 80;
+if( process.env.NODE_ENV == 'development' ){
+	port = 4000;
+}
 var server = http.createServer(app);
 
-server.listen(4000);
+server.listen(port);
