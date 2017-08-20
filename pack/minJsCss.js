@@ -34,13 +34,6 @@ async function minJsCss(info, content, type){
 		fs.removeSync(_path);
 	});
 
-	try{
-		fs.accessSync(path.join(config.publicPages, 'js'));
-	} catch(e){
-		fs.mkdirSync(path.join(config.publicPages, 'js'));
-		fs.mkdirSync(path.join(config.publicPages, 'css'));
-	}
-
 	if( type == 'libs' ){
 		fs.writeFileSync(path.join(config.output, jsName), pageJs, 'utf8');
 		fs.writeFileSync(path.join(config.output, cssName), pageCss, 'utf8');

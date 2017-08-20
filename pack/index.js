@@ -11,6 +11,7 @@ var packLibs = require('./packLibs');
 var packPage = require('./packPage');
 var tools = require('./tools');
 var watchFiles = require('./watchFiles');
+var makeDir = require('./makeDir');
 
 /*
  *	打包流程：
@@ -22,6 +23,7 @@ var watchFiles = require('./watchFiles');
  */
 
 (async function(){
+	makeDir();
 	var libs = await packLibs();
 
 	var layoutInfo = await processLayout(libs);	

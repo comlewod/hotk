@@ -22,10 +22,12 @@ async function packPage(info, content){
 	indexContent = tools.regReplace(indexContent);
 
 	//每个页面的入口index.html
-	fs.access(path.join(config.templates, info.name), function(err){
-		if( err ) fs.mkdirSync(path.join(config.templates, info.name), 0777);
-		fs.writeFileSync(path.join(config.templates, info.name, info.file), indexContent, 'utf8');
-	});
+	try{
+		fs.accessSync(path.join(config.templates, info.name));
+	} catch(e){
+		fs.mkdirSync(path.join(config.templates, info.name), 0777);
+	}
+	fs.writeFileSync(path.join(config.templates, info.name, info.file), indexContent, 'utf8');
 } 
 
 module.exports = packPage;

@@ -15,16 +15,6 @@ async function packGlobal(globalArr){
 		js: '',
 		css: ''
 	};
-	try{
-		fs.accessSync(config.publicPages);
-	} catch(e){
-		fs.mkdirSync(config.publicPages);
-	}
-	try{
-		fs.accessSync(path.join(config.publicPages, 'image'));
-	} catch(e){
-		fs.mkdirSync(path.join(config.publicPages, 'image'));
-	}
 
 	for( let widget of globalArr ){
 		var _path = path.join(config.globalWidget, widget);
