@@ -23,7 +23,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "NODE_ENV=development ./node_modules/.bin/nodemon ./bin/www",
+    "dev": "NODE_ENV=development ./node_modules/.bin/nodemon ./bin/www",
+    "start": "PORT=8888 forever start ./bin/www",
     "pack": "./node_modules/.bin/nodemon ./pack/index",
     "save_database": "mysqldump -uroot -p hotk > ~/program/document/program/hotk/database/hotk.sql"
   },
