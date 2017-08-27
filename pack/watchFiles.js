@@ -37,23 +37,46 @@ function watchFile(layoutInfo, libs){
 		console.log('layout 变动 ' + _path)
 		packLayout(_path, libs);	
 	});
-
-	//监测页面入口文件及其相应组件
-	var pageWatch = [
-		path.join(config.views, '*', '*.html'),			//页面入口文件
-		path.join(config.views, '*', '*', '*.*'),		//组件内的html、css、js
-		path.join(config.views, '*', '*', '*', '*.*')	//组件内的图片
-	];
-	chokidar.watch(pageWatch, {
+	
+	//页面入口文件
+	chokidar.watch(path.join(config.views, '*', '*.html'), {
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('页面文件改动 ' + _path);
+		console.log('页面入口文件改动 ' + _path);
 		await checkGlobal(_path, layoutInfo);	
 
 		let info = tools.pageInfo(_path);
 		await packImage(info);
+	});
 
+	//组件内的html、css、js
+	chokidar.watch(path.join(config.views, '*', '*', '*.*'), {
+		ignored: /(^|[\/\\])\../,
+		ignoreInitial: true
+	}).on('all', async function(event, _path){
+		console.log('组件文件改动 ' + _path);
+		var widgetInfo = path.parse(_path);
+		var pageIndex = path.join(path.resolve(widgetInfo.dir, '..'), 'index.html');
+
+		await checkGlobal(pageIndex, layoutInfo);	
+		let info = tools.pageInfo(pageIndex);
+		await packImage(info);
+	});
+
+	//组件内的图片
+	chokidar.watch(path.join(config.views, '*', '*', '*', '*.*'), {
+		ignored: /(^|[\/\\])\../,
+		ignoreInitial: true
+	}).on('all', async function(event, _path){
+		console.log('组件图片改动 ' + _path);
+		var widgetInfo = path.parse(_path);
+		var pageIndex = glob.sync(path.join(path.resolve(widgetInfo.dir, '..', '..'), '*.html'));
+		console.log(pageIndex);
+
+		await checkGlobal(pageIndex[0], layoutInfo);	
+		let info = tools.pageInfo(pageIndex[0]);
+		await packImage(info);
 	});
 }
 
