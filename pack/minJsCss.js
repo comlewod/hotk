@@ -14,7 +14,12 @@ var tools = require('./tools');
 async function minJsCss(info, content, type){
 	var obj = await less.render(content.css);
 	var pageCss = new cleanCss().minify(obj.css).styles;
-	var pageJs = uglifyJs.minify(content.js).code;
+
+	if( process.env.NODE_ENV == 'development' ){
+		var pageJs = content.js;
+	} else {
+		var pageJs = uglifyJs.minify(content.js).code;
+	}
 
 	var jsName = info.name + '-' + tools.fileRename(pageJs) + '.js';
 	var cssName = info.name + '-' + tools.fileRename(pageCss) + '.css';
