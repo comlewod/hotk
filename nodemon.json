@@ -1,4 +1,4 @@
 {
-	"watch": ["pack", "www"],
+	"watch": ["pack", "www", "controller", "service"],
 	"ignore": ["public/pages"]
 }
