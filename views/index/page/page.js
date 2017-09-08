@@ -1,5 +1,6 @@
 $(function(){
-	var myDrop = new Dropzone('#j-upload', {
+	//var myDrop = new Dropzone('#j-upload', {
+	$('#j-upload').dropzone({
 		url: '/upload',
 		paramName: function(){
 			return 'test';
