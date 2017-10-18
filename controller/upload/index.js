@@ -16,10 +16,19 @@ router.get('/', function(req, res){
 		});
 	});
 	*/
-	res.render('index/index', {
+	res.render('upload/index', {
 		result: []
 	});
 });
 
+
+router.post('/upload', upload.array('test'), function(req, res){
+	for( let file of req.files ){
+		image.save('banner', file);
+	}
+	res.json({
+		'code': 0
+	});
+});
 
 module.exports = router;
