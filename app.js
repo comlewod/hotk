@@ -22,4 +22,9 @@ app.use(bodyParser.urlencoded({
 
 app.use(controller);//通过express的router来获取所设置的路由
 
+//错误处理
+app.use((err, req, res, next) => {
+	res.send('wrong');
+});
+
 module.exports = app;
