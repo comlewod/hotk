@@ -1,0 +1,33 @@
+<%- contentFor('static')%>
+<script src="page.js"></script>
+<link rel="stylesheet" type="text/css" href="page.css" />
+
+<%- contentFor('body')%>
+<div class="main-content container-fluid">
+	<div class="content row">
+		<div class="sidebar col-md-2">
+			<a href="/back/banner">Banner</a>
+		</div>
+
+		<div class="col-md-10">
+		<% if( page == 'banner' ){ %>
+			<@ WIDGET banner @>
+		<% } else { %>
+			<p>welcome</p>
+		<% } %>
+		</div>
+	</div>
+</div>
+
+<@ WIDGET page @>
+<@ WIDGET window @>
+
+
+<script>
+G_Module.initModule([
+	'page',
+	'window'
+	'banner'
+], {
+});
+</script>

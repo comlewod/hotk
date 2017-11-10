@@ -1,5 +1,7 @@
 'use strict'
 
+//如果发现监控只修改了一次，后续监控无效的话，需要关闭所有监控进程（关闭bash），再重新开启进程
+
 var path = require('path');
 var chokidar = require('chokidar');
 var glob = require('glob');
@@ -13,7 +15,7 @@ var packImage = require('./packImage');
 var tools = require('./tools');
 
 var layouts = glob.sync(path.join(config.views, '*.html'));
-var libsPath = glob.sync(path.join(config.libs, '*', '*.*'));
+var libsPath = glob.sync(path.join(config.libs, 'js', '*.*'));
 
 function watchFile(layoutInfo, libs){
 	//监测libs文件
@@ -22,10 +24,10 @@ function watchFile(layoutInfo, libs){
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
 		console.log('libs 变动 ' + _path)
-		libs = await packLibs();
+		var new_libs = await packLibs();
 		for( let _path of config.layouts ){
 			let info = path.parse(_path);
-			await packLayout(_path, libs);
+			await packLayout(_path, new_libs);
 		}
 	});
 
