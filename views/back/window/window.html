@@ -1,2 +1,14 @@
-<div class="widget-win">
+<script type="text/x-template" id="comp-window">
+<div class="component-win" v-show="show">
+	<div class="win-bg"></div>
+	<div class="win-box">
+		<div class="win-header">
+			<span>{{title}}</span>
+			<div class="btn-close" @click="close">close</div>
+		</div>
+		<div class="win-body">
+			<slot name="content"></slot>
+		</div>
+	</div>
 </div>
+</script>

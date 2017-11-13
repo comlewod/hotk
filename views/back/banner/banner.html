@@ -1,6 +1,23 @@
-<div class="main-page">
+<div class="main-page j-main-page">
 	<h2>Banner</h2>
-	<button class="btn btn-primary">+Add</button>
+	<button class="btn btn-primary" @click="winShow=true;">+Add</button>
+	
+	<!-- 弹窗 -->
+	<comp-window :title="title" :show="winShow" @cancel="winHide">
+		<div slot="content">
+			<div>
+				<label>Title</label>
+				<input class="form-control" type="text" />
+			</div>
+			<div>
+				<label>Description</label>
+				<textarea class="form-control"></textarea>
+			</div>
+			<br>
+			<button class="btn btn-primary" @click="chooseImg">Choose image</button>
+			<button class="btn btn-primary" @click="uploadImg">Upload</button>
+		</div>
+	</comp-window>
 
 	<div class="page-content">
 		<table class="table table-hover">
