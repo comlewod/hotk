@@ -8,7 +8,7 @@ var image = require('../../service/image');
 
 //var adminCrud = require('../../database/crud/admin');
 
-router.get('/', function(req, res){
+router.get('/', (req, res) => {
 	/*
 	adminCrud.query(function(result){
 		res.render('index/index', {
@@ -22,20 +22,16 @@ router.get('/', function(req, res){
 	});
 });
 
+/*
 router.get('/:page', function(req, res){
 	let {page} = req.params;
-	/*
-	adminCrud.query(function(result){
-		res.render('index/index', {
-			result: result
-		});
-	});
-	*/
 	res.render('back/index', {
 		page: page,
 		result: []
 	});
 });
+*/
 
+router.use('/banner', require('./banner'));
 
 module.exports = router;

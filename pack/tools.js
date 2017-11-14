@@ -54,7 +54,11 @@ var tools = {
 		var info = path.parse(filePath);
 
 		var reg = tools.reg.widget;
-		var content = fs.readFileSync(filePath, 'utf8');
+		try{
+			var content = fs.readFileSync(filePath, 'utf8');
+		} catch(e) {
+			var content = '';
+		}
 		var widgets = [];
 		content.replace(reg, function($0, $1){
 			if( widgets.indexOf($1) == -1 ){

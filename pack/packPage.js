@@ -10,7 +10,11 @@ var minJsCss = require('./minJsCss');
  */
 async function packPage(info, content){
 	var nameObj = await minJsCss(info, content);
-	var indexContent = fs.readFileSync(info.path, 'utf8');
+	try{
+		var indexContent = fs.readFileSync(info.path, 'utf8');
+	} catch(e) {
+		var indexContent = '';
+	}
 	indexContent = indexContent.replace(/page.js/g, '/pages/js/' + nameObj.js);
 	indexContent = indexContent.replace(/page.css/g, '/pages/css/' + nameObj.css);
 
