@@ -19,17 +19,25 @@ G_Module.define('banner', {
 					console.log(file);
 					var acceptOnly = /^image\/(gif|png|jpe?g)$/i;
 					if( !acceptOnly.test(file.type) ){
-						alert('Please choose one piece of image.');
+						alert('Please select one piece of image.');
 						return;
 					}
 					this.previewSrc = window.URL.createObjectURL(file);
 				},
 				uploadImg: function(){
 					var file = this.$refs.file_input.files[0];
-					var formData = {
-						img: file,
-					};
-					$.post('/back/banner/upload', formData, function(res){
+					var formData = new FormData();
+					formData.append('banner', file);
+					
+					$.ajax({
+						url: '/back/banner/upload', 
+						type: 'POST',
+						data: formData,
+						cache: false,
+						contentType: false,
+						processData: false,
+						success: function(res){
+						}
 					});
 				},
 				winHide: function(){

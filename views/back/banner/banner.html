@@ -3,7 +3,7 @@
 	<button class="btn btn-primary" @click="winShow=true;">+Add</button>
 	
 	<!-- 弹窗 -->
-	<comp-window :title="title" :show="winShow" @cancel="winHide">
+	<comp-window :title="title" :show="winShow" @cancel="winHide" v-cloak>
 		<div slot="content">
 			<div>
 				<label>Title</label>
