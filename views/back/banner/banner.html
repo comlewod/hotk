@@ -3,15 +3,15 @@
 	<button class="btn btn-primary" @click="winShow=true;">+Add</button>
 	
 	<!-- 弹窗 -->
-	<comp-window :title="title" :show="winShow" @cancel="winHide" v-cloak>
+	<comp-window :title="name" :show="winShow" @cancel="winHide" v-cloak>
 		<div slot="content">
 			<div>
 				<label>Title</label>
-				<input class="form-control" type="text" />
+				<input v-model="title" class="form-control" type="text" />
 			</div>
 			<div>
 				<label>Description</label>
-				<textarea class="form-control"></textarea>
+				<textarea v-model="des" class="form-control"></textarea>
 			</div>
 			<br>
 			<div>
@@ -25,9 +25,7 @@
 				<button class="btn btn-primary" @click="uploadImg">Upload</button>
 			</div>
 
-			<form class="global-hide">
-				<input type="file" ref="file_input" @change="selectImg" />
-			</form>
+			<input class="global-hide" type="file" ref="file_input" @change="selectImg" />
 		</div>
 	</comp-window>
 
@@ -40,7 +38,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<tr v-for="list">
 					<td>1</td>
 					<td>haha</td>
 				</tr>

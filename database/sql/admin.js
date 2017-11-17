@@ -1,5 +1,7 @@
 var admin = {
-	retrieve: 'SELECT * FROM user',
+	retrieve: (table) => {
+		return 'SELECT * FROM ' + table;
+	},
 };
 
 module.exports = admin;

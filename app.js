@@ -9,7 +9,7 @@ var os = require('os');
 
 var app = new express();
 
-app.use(timeout('3s'));
+app.use(timeout('10s'));
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'html');
@@ -33,7 +33,6 @@ function haltOnTimeout(req, res, next){
 
 //错误处理
 app.use((err, req, res, next) => {
-	console.log(123);
 	res.send(err.message);
 });
 

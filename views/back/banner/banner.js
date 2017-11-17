@@ -6,9 +6,12 @@ G_Module.define('banner', {
 		new Vue({
 			el: '.j-banner-page',
 			data: {
-				title: 'Add Banner',
+				name: 'Add Banner',
+				list: [],
 				winShow: false,
-				previewSrc: ''
+				previewSrc: '',
+				title: '',
+				des: '',
 			},
 			methods: {
 				chooseImg: function(){
@@ -28,6 +31,8 @@ G_Module.define('banner', {
 					var file = this.$refs.file_input.files[0];
 					var formData = new FormData();
 					formData.append('banner', file);
+					formData.append('title', this.title);
+					formData.append('description', this.des);
 					
 					$.ajax({
 						url: '/back/banner/upload', 
