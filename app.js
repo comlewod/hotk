@@ -23,6 +23,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 
+require('./locals')(app);
+
 app.use(haltOnTimeout);
 app.use(controller);//通过express的router来获取所设置的路由
 app.use(haltOnTimeout);

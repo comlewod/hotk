@@ -1,4 +1,4 @@
-<div class="main-page banner-page j-banner-page">
+<div class="main-page banner-page j-banner-page" v-cloak>
 	<h2>Banner</h2>
 	<button class="btn btn-primary" @click="winShow=true;">+Add</button>
 	
@@ -34,13 +34,22 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>title</th>
+					<th>Title</th>
+					<th>Image</th>
+					<th>Operate</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="list">
-					<td>1</td>
-					<td>haha</td>
+				<tr v-for="(item, index) in list">
+					<td>{{index}}</td>
+					<td>{{item.title}}</td>
+					<td>
+						{{item.image}}
+						<img :src="item.image" />
+					</td>
+					<td>
+						<button class="btn btn-danger" @click="delItem(item)">Delete</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>

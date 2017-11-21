@@ -8,6 +8,8 @@ var image = require('../../service/image');
 var adminCrud = require('../../database/crud/admin');
 
 router.get('/', (req, res) => {
+	//res.locals.IMG_PATH = 'hhaha';
+	res.send(res.locals);return;
 	adminCrud.query('banner', (result) => {
 		res.render('back/index', {
 			page: 'banner',

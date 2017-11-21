@@ -3,11 +3,12 @@ G_Module.define('banner', {
 		this.initVue(opts);
 	},
 	initVue: function(opts){
+		vueObj(opts);
 		new Vue({
 			el: '.j-banner-page',
 			data: {
 				name: 'Add Banner',
-				list: [],
+				list: opts.result,
 				winShow: false,
 				previewSrc: '',
 				title: '',
@@ -47,6 +48,10 @@ G_Module.define('banner', {
 				},
 				winHide: function(){
 					this.winShow = false;
+				},
+				delItem: function(item){
+				},
+				imgSrc: function(src){
 				},
 			}
 		});

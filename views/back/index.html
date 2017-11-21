@@ -24,10 +24,15 @@
 <@ WIDGET window @>
 
 <script>
+function vueObj(obj){
+	console.log(JSON.parse(JSON.stringify(obj)));
+}
 G_Module.initModule([
 	'window',
 	'page',
 	'banner'
 ], {
+	img: "<%= IMG_PATH %>",
+	result: <%- JSON.stringify(result) %>
 });
 </script>
