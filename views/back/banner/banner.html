@@ -3,7 +3,7 @@
 	<button class="btn btn-primary" @click="winShow=true;">+Add</button>
 	
 	<!-- 弹窗 -->
-	<comp-window :title="name" :show="winShow" @cancel="winHide" v-cloak>
+	<comp-window :title="name" :show="winShow" @cancel="winHide">
 		<div slot="content">
 			<div>
 				<label>Title</label>
@@ -45,7 +45,7 @@
 					<td>{{item.title}}</td>
 					<td>
 						{{item.image}}
-						<img :src="item.image" />
+						<img :src="hostName + '/' + item.image" />
 					</td>
 					<td>
 						<button class="btn btn-danger" @click="delItem(item)">Delete</button>

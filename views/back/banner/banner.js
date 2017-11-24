@@ -13,6 +13,7 @@ G_Module.define('banner', {
 				previewSrc: '',
 				title: '',
 				des: '',
+				hostName: location.hostname,
 			},
 			methods: {
 				chooseImg: function(){

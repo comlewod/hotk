@@ -1,9 +1,10 @@
 
 var app = require('../app');
+var config = require('../config');
 var http = require('http');
 
 if( process.env.NODE_ENV == 'development' ){
-	var port = 4000;
+	var port = config.DEV_PORT;
 } else {
 	var port = process.env.PORT;
 }
