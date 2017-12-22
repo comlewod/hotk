@@ -7,6 +7,7 @@ var db = require('../../conf/db');
 var pool = mysql.createPool(db.mysql);
 
 var admin = {
+	//查询
 	query: (table, cb) => {
 		pool.getConnection((err, connect) => {
 			let sql = adminSql.retrieve(table);
@@ -18,6 +19,7 @@ var admin = {
 			});
 		});
 	},
+	//插入
 	insert: (table, obj, cb) => {
 		pool.getConnection((err, connect) => {
 			if( err ) throw err;
@@ -29,6 +31,9 @@ var admin = {
 				cb(results);
 			});
 		});
+	},
+	//删除
+	drop: (table, obj, cb) => {
 	},
 };
 

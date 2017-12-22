@@ -44,4 +44,7 @@ router.post('/upload', upload.single('banner'), (req, res) => {
 	*/
 });
 
+router.post('delete', (req, res) => {
+});
+
 module.exports = router;
