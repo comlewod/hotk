@@ -30,6 +30,7 @@ G_Module.define('banner', {
 					this.previewSrc = window.URL.createObjectURL(file);
 				},
 				uploadImg: function(){
+					var _this = this;
 					var file = this.$refs.file_input.files[0];
 					var formData = new FormData();
 					formData.append('banner', file);
@@ -44,6 +45,13 @@ G_Module.define('banner', {
 						contentType: false,
 						processData: false,
 						success: function(res){
+							if( res.code == 0 ){
+								Vue.set(_this, 'list', res.info);
+								_this.title = '';
+								_this.des = '';
+								_this.previewSrc = '';
+								_this.winShow = false;
+							}
 						}
 					});
 				},
@@ -51,6 +59,14 @@ G_Module.define('banner', {
 					this.winShow = false;
 				},
 				delItem: function(item){
+					var _this = this;
+					if( confirm('Confirm delete this item?') ){
+						$.post('/back/banner/delete', {id: item.id}, function(res){
+							if( res.code == 0 ){
+								Vue.set(_this, 'list', res.info);
+							}
+						});
+					}
 				},
 				imgSrc: function(src){
 				},

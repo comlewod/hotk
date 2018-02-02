@@ -25,15 +25,38 @@ var admin = {
 			if( err ) throw err;
 			let keys = Object.keys(obj).join(', ');
 			let values = [Object.values(obj)];
-			let sql = "INSERT INTO banner (" + keys + ") VALUES ?";
+			let sql = "INSERT INTO " + table + "(" + keys + ") VALUES ?";
 			connect.query(sql, [values], (err, results, fields) => {
 				if( err ) throw err;
-				cb(results);
+
+				//获取最新列表
+				let query_sql = adminSql.retrieve(table);
+				connect.query(query_sql, (err, results, fields) => {
+					if( err ) throw err;
+					cb && cb(results);
+					connect.release();
+				});
 			});
 		});
 	},
 	//删除
 	drop: (table, obj, cb) => {
+		pool.getConnection((err, connect) => {
+			if( err ) throw err;
+			let sql = "DELETE FROM " + table + " WHERE id=" + obj.id;
+			connect.query(sql, (err, results, fields) => {
+				if( err ) throw err;
+
+				
+				//获取最新列表
+				let query_sql = adminSql.retrieve(table);
+				connect.query(query_sql, (err, results, fields) => {
+					if( err ) throw err;
+					cb && cb(results);
+					connect.release();
+				});
+			});
+		});
 	},
 };
 
