@@ -1,0 +1,26 @@
+@grey: #e8e8e8;
+@blue: #1E8BE8;
+
+body {
+	background: @grey;
+}
+.login-content {
+	width: 360px;
+	margin: 0 auto;
+	padding: 40px 20px;;
+	margin-top: 60px;
+	background-color: #fff;
+	border-radius: 5px;
+
+	.submit-btn {
+		width: 100%;
+		color: #fff;
+		background-color: @blue;
+		border: 1px solid @blue;
+		padding: 10px 0;
+		&:hover {
+			color: @blue;
+			background-color: #fff;
+		}
+	}
+}

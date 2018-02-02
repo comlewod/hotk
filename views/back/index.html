@@ -6,13 +6,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <%- contentFor('body')%>
-<div class="main-content container-fluid">
-	<div class="content row">
-		<div class="sidebar col-md-2">
-			<a href="/back/banner">Banner</a>
+
+<% if( page == 'login' ){ %>
+<@ WIDGET login @>
+
+<% } else { %>
+<div class="main-content j-container">
+	<div class="page">
+		<div class="nav">
+			<div class="list-group">
+				<a href="/back/banner" class="list-group-item active">Banner</a>
+				<a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+			</div> 
 		</div>
 
-		<div class="col-md-10">
+		<div class="content container-fluid">
 		<% if( page == 'banner' ){ %>
 			<@ WIDGET banner @>
 		<% } else { %>
@@ -34,6 +42,8 @@ G_Module.initModule([
 	'page',
 	'banner'
 ], {
+	page: "<%= page %>",
 	result: <%- JSON.stringify(result) %>
 });
 </script>
+<% } %>

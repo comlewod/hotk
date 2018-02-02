@@ -6,19 +6,16 @@ var fs = require('fs-extra');
 
 var image = require('../../service/image');
 
-//var adminCrud = require('../../database/crud/admin');
-
 router.get('/', (req, res) => {
-	/*
-	adminCrud.query(function(result){
-		res.render('index/index', {
-			result: result
-		});
-	});
-	*/
 	res.render('back/index', {
 		page: '',
 		result: []
+	});
+});
+
+router.get('/login', (req, res) => {
+	res.render('back/index', {
+		page: 'login',
 	});
 });
 
