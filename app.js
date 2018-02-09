@@ -1,5 +1,6 @@
 var path = require('path');
 var express = require('express');
+var session = require('express-session');
 var mysql = require('mysql');
 var expressLayouts = require('express-ejs-layouts');
 var bodyParser = require('body-parser');
@@ -10,6 +11,18 @@ var os = require('os');
 var app = new express();
 
 app.use(timeout('10s'));
+
+app.use(session({
+	name: 'hotk_session',
+	secret: 'hotk_program',
+	saveUninitialized: false,
+	resave: false,
+	cookie: {
+		httpOnly: false,
+		maxAge: 60 * 60 * 24 * 1000 * 2
+	}
+}));
+
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'html');

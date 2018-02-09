@@ -5,8 +5,12 @@ var image = require('../../service/image');
 var adminCrud = require('../../database/crud/admin');
 
 router.get('/', (req, res) => {
+	if( req.session.view ) req.session.view++;
+	else req.session.view = 0;
+	//res.send('' +req.session.view);return;
 	res.render('back/index', {
 		page: 'login',
+		view: req.session.view
 	});
 });
 
@@ -38,11 +42,15 @@ router.post('/register', (req, res) => {
 
 
 router.post('/login', (req, res) => {
+	res.send(req.session);return;
 	adminCrud.query('admin', 'name="' + req.body.name + '"', (result) => {
 		result = result[0];
 		var now_pw = cryptoJs.MD5(req.body.password + result.salt).toString();
 		
 		if( now_pw == result.password ){
+			req.session.regenerate(err => {
+				req.session.user = req.body.name;
+			});
 			res.json({
 				code: 0,
 				msg: 'login success'
