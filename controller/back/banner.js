@@ -8,16 +8,12 @@ var image = require('../../service/image');
 var adminCrud = require('../../database/crud/admin');
 
 router.get('/', (req, res) => {
-	adminCrud.query('banner', (result) => {
+	adminCrud.query('banner', '', (result) => {
 		res.render('back/index', {
 			page: 'banner',
 			result: result
 		});
 	});
-
-	/*
-	
-	*/
 });
 
 router.post('/upload', upload.single('banner'), (req, res) => {

@@ -1,5 +1,6 @@
 <%- contentFor('static')%>
 <link rel="stylesheet" type="text/css" href="page.css" />
+<link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_567892_vypshbboj4avpldi.css" />
 <script src="/frames/dropzone.js"></script>
 <script src="page.js"></script>
 
@@ -9,6 +10,10 @@
 
 <% if( page == 'login' ){ %>
 <@ WIDGET login @>
+
+<script>
+G_Module.initModule(['login'], {});
+</script>
 
 <% } else { %>
 <div class="main-content j-container">
@@ -34,9 +39,6 @@
 <@ WIDGET window @>
 
 <script>
-function vueObj(obj){
-	console.log(JSON.parse(JSON.stringify(obj)));
-}
 G_Module.initModule([
 	'window',
 	'page',

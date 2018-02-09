@@ -1,6 +1,7 @@
 'use strict'
 
 //如果发现监控只修改了一次，后续监控无效的话，需要关闭所有监控进程（关闭bash），再重新开启进程
+//或者是监控文件并不在同个目录下（传入数组参数时），导致只有监控一次，后续无效（可能是插件bug）
 
 var path = require('path');
 var chokidar = require('chokidar');
@@ -15,15 +16,14 @@ var packImage = require('./packImage');
 var tools = require('./tools');
 
 var layouts = glob.sync(path.join(config.views, '*.html'));
-var libsPath = glob.sync(path.join(config.libs, 'js', '*.*'));
 
 function watchFile(layoutInfo, libs){
 	//监测libs文件
-	chokidar.watch(libsPath, {
+	chokidar.watch(path.join(config.libs, '*', '*.*'), {
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('libs 变动 ' + _path)
+		logPath('libs', _path)
 		var new_libs = await packLibs();
 		for( let _path of config.layouts ){
 			let info = path.parse(_path);
@@ -36,7 +36,7 @@ function watchFile(layoutInfo, libs){
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('layout 变动 ' + _path)
+		logPath('layout', _path)
 		packLayout(_path, libs);	
 	});
 	
@@ -45,7 +45,7 @@ function watchFile(layoutInfo, libs){
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('页面入口文件改动 ' + _path);
+		logPath('页面入口文件', _path);
 		await checkGlobal(_path, layoutInfo);	
 
 		let info = tools.pageInfo(_path);
@@ -57,7 +57,7 @@ function watchFile(layoutInfo, libs){
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('组件文件改动 ' + _path);
+		logPath('组件文件', _path);
 		var widgetInfo = path.parse(_path);
 		var pageIndex = path.join(path.resolve(widgetInfo.dir, '..'), 'index.html');
 
@@ -71,10 +71,9 @@ function watchFile(layoutInfo, libs){
 		ignored: /(^|[\/\\])\../,
 		ignoreInitial: true
 	}).on('all', async function(event, _path){
-		console.log('组件图片改动 ' + _path);
+		logPath('组件图片', _path);
 		var widgetInfo = path.parse(_path);
 		var pageIndex = glob.sync(path.join(path.resolve(widgetInfo.dir, '..', '..'), '*.html'));
-		console.log(pageIndex);
 
 		await checkGlobal(pageIndex[0], layoutInfo);	
 		let info = tools.pageInfo(pageIndex[0]);
@@ -93,6 +92,11 @@ async function checkGlobal(_path, layoutInfo){
 			}
 		}
 	}
+}
+
+function logPath(txt, dir){
+	var relative = path.relative(config.root, dir);
+	console.log(txt + '改动：' + relative);
 }
 
 module.exports = watchFile;

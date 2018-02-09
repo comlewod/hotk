@@ -13,12 +13,6 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.get('/login', (req, res) => {
-	res.render('back/index', {
-		page: 'login',
-	});
-});
-
 /*
 router.get('/:page', function(req, res){
 	let {page} = req.params;
@@ -30,5 +24,6 @@ router.get('/:page', function(req, res){
 */
 
 router.use('/banner', require('./banner'));
+router.use('/login', require('./login'));
 
 module.exports = router;

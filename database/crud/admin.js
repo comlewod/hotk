@@ -8,9 +8,12 @@ var pool = mysql.createPool(db.mysql);
 
 var admin = {
 	//查询
-	query: (table, cb) => {
+	query: (table, filter, cb) => {
 		pool.getConnection((err, connect) => {
 			let sql = adminSql.retrieve(table);
+			if( filter ){
+				sql += ' WHERE ' + filter;
+			}
 			connect.query(sql, (err, results, fields) => {
 				if( err ) throw err;
 				cb && cb(results);
@@ -28,14 +31,18 @@ var admin = {
 			let sql = "INSERT INTO " + table + "(" + keys + ") VALUES ?";
 			connect.query(sql, [values], (err, results, fields) => {
 				if( err ) throw err;
+				cb && cb(results);
+				connect.release();
 
 				//获取最新列表
+				/*
 				let query_sql = adminSql.retrieve(table);
 				connect.query(query_sql, (err, results, fields) => {
 					if( err ) throw err;
 					cb && cb(results);
 					connect.release();
 				});
+				*/
 			});
 		});
 	},
@@ -46,15 +53,8 @@ var admin = {
 			let sql = "DELETE FROM " + table + " WHERE id=" + obj.id;
 			connect.query(sql, (err, results, fields) => {
 				if( err ) throw err;
-
-				
-				//获取最新列表
-				let query_sql = adminSql.retrieve(table);
-				connect.query(query_sql, (err, results, fields) => {
-					if( err ) throw err;
-					cb && cb(results);
-					connect.release();
-				});
+				cb && cb(results);
+				connect.release();
 			});
 		});
 	},

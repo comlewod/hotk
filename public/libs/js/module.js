@@ -25,3 +25,7 @@ var G_Module = G_Module || {};
 		}
 	};
 })();
+
+function vueObj(obj){
+	console.log(JSON.parse(JSON.stringify(obj)));
+}
