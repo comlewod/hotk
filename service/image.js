@@ -27,7 +27,8 @@ image = {
 			fs.mkdirSync(path.join(storagePath, folder));
 		}
 
-		let file_name = cryptoJs.MD5(obj.buffer).toString().slice(0, 6) + '_' + obj.originalname;
+		var _hash = cryptoJs.MD5(obj.buffer + obj.originalname).toString().slice(0, 6);
+		let file_name =  _hash + '_' + obj.originalname;
 		let _path = path.join(storagePath, folder, file_name);
 		fs.writeFileSync(_path, obj.buffer);
 		return 'storage/' + folder + '/' + file_name;
