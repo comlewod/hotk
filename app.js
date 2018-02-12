@@ -1,26 +1,29 @@
 var path = require('path');
 var express = require('express');
 var session = require('express-session');
+var redisStore = require('connect-redis')(session);
 var mysql = require('mysql');
 var expressLayouts = require('express-ejs-layouts');
 var bodyParser = require('body-parser');
 var timeout = require('connect-timeout');
 var controller = require('./controller/init');
+var config = require('./config');
 var os = require('os');
+//var cookieParser = require('cookie-parser');
 
 var app = new express();
 
 app.use(timeout('10s'));
 
 app.use(session({
-	name: 'hotk_session',
+	name: 'sessionId',
 	secret: 'hotk_program',
-	saveUninitialized: false,
 	resave: false,
-	cookie: {
-		httpOnly: false,
-		maxAge: 60 * 60 * 24 * 1000 * 2
-	}
+	saveUninitialized: false,
+	store: new redisStore({
+		host: config.REDIS_HOST,
+		port: config.REDIS_PORT,
+	})
 }));
 
 app.engine('.html', require('ejs').__express);

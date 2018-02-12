@@ -6,7 +6,7 @@ var adminCrud = require('../../database/crud/admin');
 
 router.get('/', (req, res) => {
 	if( req.session.view ) req.session.view++;
-	else req.session.view = 0;
+	else req.session.view = 1;
 	//res.send('' +req.session.view);return;
 	res.render('back/index', {
 		page: 'login',

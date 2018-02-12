@@ -23,10 +23,12 @@ router.post('/upload', upload.single('banner'), (req, res) => {
 	let obj = Object.assign({image: imgPath}, req.body);
 
 	adminCrud.insert('banner', obj, (result) => {
-		res.json({
-			code: 0,
-			info: result,
-			msg: 'success' 
+		adminCrud.query('banner', '', (result) => {
+			res.json({
+				code: 0,
+				info: result,
+				msg: 'success' 
+			});
 		});
 	});
 	
@@ -43,10 +45,12 @@ router.post('/upload', upload.single('banner'), (req, res) => {
 
 router.post('/delete', (req, res) => {
 	adminCrud.drop('banner', req.body, (result) => {
-		res.json({
-			code: 0,
-			info: result,
-			msg: 'success' 
+		adminCrud.query('banner', '', (result) => {
+			res.json({
+				code: 0,
+				info: result,
+				msg: 'success' 
+			});
 		});
 	});
 });
