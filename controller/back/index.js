@@ -6,6 +6,16 @@ var fs = require('fs-extra');
 
 var image = require('../../service/image');
 
+//如果用户没登录，则跳转登录页
+/*
+router.use(/(?!\/login)/, (req, res, next) => {
+	if( !req.session.user ){
+		return res.redirect('/back/login');
+	}
+	next();
+});
+*/
+
 router.get('/', (req, res) => {
 	res.render('back/index', {
 		page: '',
