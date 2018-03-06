@@ -8,6 +8,7 @@ G_Module.define('login', {
 			data: {
 				name: '',
 				password: '',
+				error: false
 			},
 			methods: {
 				register: function(){
@@ -19,11 +20,18 @@ G_Module.define('login', {
 					});
 				},
 				login: function(){
+					var _this = this;
+					this.error = false;
 					var data = {
 						name: this.name,
 						password: this.password
 					};
-					$.post('/back/login/login', data, function(){
+					$.post('/back/login/login', data, function(res){
+						if( res.code == 0 ){
+							window.location.href = '/back';
+						} else {
+							_this.error = true;
+						}
 					});
 				}
 			}

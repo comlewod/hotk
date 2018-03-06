@@ -18,12 +18,16 @@ app.use(timeout('10s'));
 app.use(session({
 	name: 'sessionId',
 	secret: 'hotk_program',
-	resave: false,
+	resave: false,	//是否每次请求都重新生成
 	saveUninitialized: false,
 	store: new redisStore({
 		host: config.REDIS_HOST,
 		port: config.REDIS_PORT,
-	})
+	}),
+	cookie: {
+		httpOnly: true,
+		maxAge: 60 * 1000
+	},
 }));
 
 app.engine('.html', require('ejs').__express);
